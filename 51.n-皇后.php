@@ -1,10 +1,5 @@
-/*
- * @lc app=leetcode.cn id=51 lang=php
- *
- * [51] N 皇后
- */
+<?php
 
-// @lc code=start
 class Solution {
 
     /**
@@ -12,44 +7,38 @@ class Solution {
      * @return String[][]
      */
     function solveNQueens($n) {
-        $col = [];
-        $pie = [];
-        $na = [];
-        $res = [];
-        $path = [];
-        $this->helper(0, $n, $col, $pie, $na, $res, $path);
+        $col = $pie = $na = $res = $path = [];
+        $this->backtrack(0, $col, $pie, $na, $res, $path, $n);
         return $res;
     }
 
-    function helper($row, $n, $col, $pie, $na, &$res, $path) {
-        if ($row == $n) {
+    function backtrack($row, &$col, &$pie, &$na, &$res, &$path, $n) {
+        if (count($path) == $n) {
             $res[] = $this->translate($path);
             return;
         }
         for ($i = 0; $i < $n; $i++) {
-            if (!$col[$i] && !$pie[$row + $i] && !$na[$row - $i]) {
+            if (!$col[$i] && !$pie[$row-$i] && !$na[$row+$i]) {
                 array_push($path, $i);
                 $col[$i] = true;
-                $pie[$row + $i] = true;
-                $na[$row - $i] = true;
-                $this->helper($row + 1, $n, $col, $pie, $na, $res, $path);
+                $pie[$i] = true;
+                $na[$i] = true;
+                $this->backtrack($row+1, $col, $pie, $na, $res, $path, $n);
                 array_pop($path);
                 $col[$i] = false;
-                $pie[$row + $i] = false;
-                $na[$row - $i] = false;
+                $pie[$i] = false;
+                $na[$i] = false;
             }
         }
     }
 
     function translate($path) {
         $res = [];
-        foreach ($path as $num) {
+        for ($i = 0; $i < count($path); $i++) {
             $str = str_repeat(".", count($path));
-            $str[$num] = "Q";
+            $str[$path[$i]] = "Q";
             $res[] = $str;
         }
         return $res;
     }
 }
-// @lc code=end
-
